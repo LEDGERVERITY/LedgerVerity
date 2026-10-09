@@ -1,0 +1,3 @@
+# Security
+
+This is an experimental, read-only offline checker. It should not be used to certify a token's safety, detect all financial discrepancies, or operate on secret-bearing data. Do not attach confidential raw exports to public GitHub issues. Please report potential vulnerabilities privately through GitHub's private vulnerability reporting when enabled, or contact the repository maintainer using their published private contact channel once configured. No maintainer contact or response-time commitment is established yet. Files are limited to 20 MB and individual lines to 256 KB, but callers should still run this tool on untrusted inputs inside an appropriately sandboxed environment.

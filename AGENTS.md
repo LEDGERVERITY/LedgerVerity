@@ -1,0 +1,3 @@
+# Contributor Safeguards
+
+Read `docs/PROJECT_HANDOFF.md` and `docs/PHASE_BUILDS.md` before making changes. Never mistake a theoretical anomaly for a confirmed ETL error. Matching payloads are not necessarily duplicates. Explicitly distinguish fabricated test fixtures, real ledger evidence, and actual CI run conclusions. Do not publish releases, submit to Stellar Wave, or modify production infrastructure without owner authorization. All behavioral changes need positive, negative, malformed-input and regression tests. Keep root README free of internal phase numbers. The tool must stay read-only by default, resource-bounded, and never execute scanned source or request user signing keys.

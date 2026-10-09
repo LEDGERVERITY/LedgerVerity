@@ -1,0 +1,3 @@
+{"transaction_id":101,"transaction_hash":"abc","ledger_sequence":12,"type_string":"Contract","contract_id":"CEXAMPLE","topics":["transfer","A","B"],"data":"AAAA","operation_id":33,"successful":true,"in_successful_contract_call":true}
+{"transaction_id":101,"transaction_hash":"abc","ledger_sequence":12,"type_string":"Contract","contract_id":"CEXAMPLE","topics":["transfer","A","B"],"data":"AAAA","operation_id":null,"successful":true,"in_successful_contract_call":true}
+{"transaction_id":102,"transaction_hash":"def","ledger_sequence":13,"type_string":"Contract","contract_id":"CEXAMPLE","topics":["burn","A"],"data":"BBBB","operation_id":34,"successful":false,"in_successful_contract_call":true}

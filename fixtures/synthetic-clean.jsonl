@@ -1,0 +1,1 @@
+{"transaction_id":101,"ledger_sequence":12,"type_string":"Contract","contract_id":"CEXAMPLE","topics":["transfer","A","B"],"data":"AAAA","operation_id":33,"successful":true,"in_successful_contract_call":true}
