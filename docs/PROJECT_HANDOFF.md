@@ -3,8 +3,8 @@
 **Checked:** 2026-10-10  
 **Repository:** https://github.com/LEDGERVERITY/LedgerVerity  
 **Default branch at start:** `8daa83c0e4ebfd83d7394e855b5af1dfc199c034`  
-**Development branch:** `feat/phase02-etl-candidate-validation`  
-**Verified phase-code commit:** `f4ad752fdc9b107adac1b1916e093dea1cf97f27`
+**Phase 02 pull request:** https://github.com/LEDGERVERITY/LedgerVerity/pull/1 — MERGED  
+**Verified merge commit on main:** `33e73d388bcd1666ad02cef58d256463b15058e0`
 
 ## Implemented
 
@@ -18,7 +18,8 @@
 
 - Local patch tests on Python 3.13.5: 41/41 new tests passed (original repository tests verified separately in CI).
 - GitHub Actions on branch commit `f4ad752fdc9b107adac1b1916e093dea1cf97f27`: [run 38005321804](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38005321804) **SUCCESS** on Python 3.10 and 3.12, 54/54 tests in each matrix job (13 original + 41 new).
-- Docs/CI enhancements are staged separately from the code-test commit and require a fresh successful Actions run at their own exact SHA before final signoff.
+- Branch docs/CI acceptance: [run 38005479387](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38005479387) **SUCCESS** at `7c5d979c539fdd21be89d098f7ad364d944acfee`; all 54 tests, installed-CLI and validator smoke passed on both Python versions.
+- Post-merge main evidence: [run 38005551427](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38005551427) **SUCCESS** at merge commit `33e73d388bcd1666ad02cef58d256463b15058e0`; 54/54 tests on each Python 3.10/3.12 job, pip installation, legacy CLI and `validate-etl` smoke successful.
 
 ## Unfinished and material limitations
 
@@ -26,4 +27,4 @@
 
 ## Next executable step
 
-Review/merge the Phase 02 PR after its final CI checks. Then implement Phase 03: bounded original ledger XDR ingestion with independently verifiable provenance, complete ledger-range coverage, and malformed/unsupported-version tests. Do not claim a genuine MVP until differential reconciliation and safety gates pass. No release, application submission or deployment without owner approval. Keep root README clear of private phase numbers.
+Phase 02 is merged and CI-verified. Implement Phase 03: bounded original ledger XDR ingestion with independently verifiable provenance, complete ledger-range coverage, and malformed/unsupported-version tests. Do not claim a genuine MVP until differential reconciliation and safety gates pass. No release, application submission or deployment without owner approval. Keep root README clear of private phase numbers.
