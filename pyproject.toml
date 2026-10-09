@@ -12,6 +12,9 @@ license = { file = "LICENSE" }
 authors = [{ name = "LedgerVerity contributors" }]
 classifiers = ["Programming Language :: Python :: 3", "Development Status :: 3 - Alpha"]
 
+[project.optional-dependencies]
+source = ["stellar-sdk==16.1.0"]
+
 [project.scripts]
 ledgerverity = "ledgerverity.cli:main"
 

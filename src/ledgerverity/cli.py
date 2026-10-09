@@ -73,12 +73,15 @@ def _validate_etl(argv: list[str]) -> int:
 
 def main(argv: list[str] | None = None) -> int:
     argv = list(sys.argv[1:] if argv is None else argv)
+    if argv and argv[0] == "inspect-source":
+        from .source_cli import main as source_main
+        return source_main(argv[1:])
     if argv and argv[0] == "validate-etl":
         return _validate_etl(argv[1:])
 
     parser = argparse.ArgumentParser(
         prog="ledgerverity",
-        description="Inspect normalized Stellar event exports. For strict candidate validation: ledgerverity validate-etl --help",
+        description="Inspect normalized Stellar event exports. For strict candidate validation: ledgerverity validate-etl --help. For original ledger XDR: ledgerverity inspect-source --help",
     )
     parser.add_argument("input", type=Path, help="Legacy normalized event JSONL")
     parser.add_argument("--format", choices=("text", "json"), default="text")
