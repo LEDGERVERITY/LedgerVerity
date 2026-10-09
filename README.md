@@ -11,6 +11,7 @@ Stellar's ETL project documents cases where contract events have been duplicated
 - Flags matching event payloads appearing with and without an `operation_id` as **possible** diagnostic duplicates.
 - Flags suspect combinations of `successful: false` with `in_successful_contract_call: true` for **review**, not definitive errors.
 - Detects missing required fields and malformed input.
+- Strictly validates a versioned subset of Stellar ETL contract-event JSONL fields against a caller-declared ledger-range manifest (no independent source verification).
 - Produces deterministic terminal or JSON reports with line references and explicit uncertainty.
 
 ## Try it
@@ -27,7 +28,17 @@ For an installed command, use `python -m pip install .` in an isolated environme
 
 Exit codes: `0` no recognized issues; `1` error findings; `2` invalid input / operational error; `3` review required.
 
-## Input schema
+## Strict ETL candidate format validation
+
+For exported rows conforming to Stellar ETL's documented `ContractEventOutput` JSON fields, use the separate offline command:
+
+```bash
+PYTHONPATH=src python -m ledgerverity validate-etl --input fixtures/synthetic-etl-candidate.jsonl --scope fixtures/synthetic-etl-candidate.scope.json --format json
+```
+
+These files are **synthetic**. This command checks types, bounds, declared ledger range and schema; it does **not** prove event completeness, network authenticity or ledger parity. The separate scope manifest is a caller-provided claim, not independent evidence. See [data formats](docs/DATA_FORMATS.md).
+
+## Legacy normalized audit input schema
 
 This prototype reads JSONL objects with normalized, snake-case keys: `transaction_id` (string/integer), `ledger_sequence`, `type_string`, `contract_id`, `topics` (JSON array), `data` (JSON value), `operation_id` (nullable), `successful` (boolean), `in_successful_contract_call` (boolean), and optionally `event_id` (string). This is a **normalization contract for this tool**, not a claim that official BigQuery exports use identical JSON field names or JSON types. Export adapters for BigQuery and original ledger XDR are planned, not implemented.
 
@@ -35,6 +46,7 @@ A single input should represent **one network and a well-defined observation sco
 
 ## Limitations
 
+- The strict candidate adapter supports the documented ETL JSONL field subset, not arbitrary BigQuery API envelopes or Parquet. It has not been verified against a genuine production export.
 - Does **not** fetch or independently decode original Stellar ledger metadata.
 - Does **not** detect genuinely missing events; absence cannot be proven without a complete independent reference.
 - Does **not** automatically repair Stellar ETL or backfill historical data.
