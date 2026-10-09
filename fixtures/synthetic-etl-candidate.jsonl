@@ -1,0 +1,1 @@
+{"transaction_hash":"aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa","transaction_id":"1","successful":true,"ledger_sequence":100,"in_successful_contract_call":true,"contract_id":"","type":1,"type_string":"Contract","topics":["transfer"],"data":{"raw_amount":"340282366920938463463374607431768211455"},"operation_id":null}
