@@ -1,17 +1,29 @@
-# LedgerVerity Handoff
+# LedgerVerity — Canonical Repository Handoff
 
-Checked 2026-10-09 against the connected GitHub repository and local starter.
+**Checked:** 2026-10-10  
+**Repository:** https://github.com/LEDGERVERITY/LedgerVerity  
+**Default branch at start:** `8daa83c0e4ebfd83d7394e855b5af1dfc199c034`  
+**Development branch:** `feat/phase02-etl-candidate-validation`  
+**Verified phase-code commit:** `f4ad752fdc9b107adac1b1916e093dea1cf97f27`
 
-- **Purpose:** Read-only checks for selected Stellar ETL contract-event anomalies; the proposed full MVP will reconcile exports against independently verified ledger evidence.
-- **Canonical repository:** https://github.com/LEDGERVERITY/LedgerVerity
-- **Implementation:** Python 3.10+ package `src/ledgerverity`, CLI `python -m ledgerverity`; 20 tracked source/docs/config files in the initial upload.
-- **Project phases:** `docs/PHASE_BUILDS.md`.
-- **Current status:** Initial offline JSONL consistency-checking codebase pushed; NOT the full source-backed reconciliation MVP; NOT a published release.
-- **Initial tested source commit:** `3a4c0ae7ac14ea88895be3c6ea66e8ca6d14cac8`.
-- **Local tests:** 13/13 passed on 2026-10-09 using `PYTHONPATH=src python -m unittest discover -s tests -v`.
-- **GitHub CI:** https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38003430977 — SUCCESS for source commit `3a4c0ae7ac14ea88895be3c6ea66e8ca6d14cac8`; Python 3.10 and 3.12 unit tests and CLI fixture checks succeeded. A later documentation-only commit must be checked separately.
-- **Verified limitations:** No independent original-ledger XDR decoder or verifier, no live BigQuery adapter, no proof that any transfers are missing, and only synthetic test fixtures.
-- **Next milestone:** Implement a source-backed reference/ETL adapter and reproducible reconciliation, with malformed inputs, double-emission cases, accurate event identity, incomplete coverage semantics, and regression tests.
-- **Safety:** Do not claim full MVP readiness, Wave approval, or a published release without fresh evidence. Do not place internal phase numbers in the public root README.
+## Implemented
 
-When resuming development, check current main SHA, current GitHub Actions results, repository code, and this handoff before making implementation claims.
+- Existing Python 3.10+ offline normalized-JSONL heuristic scanner preserved, with the original 13 tests.
+- New strict candidate adapter `src/ledgerverity/formats.py` covering the documented ETL `ContractEventOutput` field subset and explicit claimed range/network manifest.
+- New `ledgerverity validate-etl` CLI preserving legacy positional audit.
+- Bounded reads, duplicate JSON-key detection, malformed and overflow rejection, exact numeric IDs, no invented canonical event IDs, and explicit unverified reporting.
+- 33 candidate-format and 8 CLI tests (synthetic), with sample candidate and manifest fixtures.
+
+## Verified evidence
+
+- Local patch tests on Python 3.13.5: 41/41 new tests passed (original repository tests verified separately in CI).
+- GitHub Actions on branch commit `f4ad752fdc9b107adac1b1916e093dea1cf97f27`: [run 38005321804](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38005321804) **SUCCESS** on Python 3.10 and 3.12, 54/54 tests in each matrix job (13 original + 41 new).
+- Docs/CI enhancements are staged separately from the code-test commit and require a fresh successful Actions run at their own exact SHA before final signoff.
+
+## Unfinished and material limitations
+
+**NOT a source-backed reconciliation MVP.** No original `LedgerCloseMeta` XDR ingestion, independent network/coverage verification, canonical source event index, verified real ETL export fixture, token-variant normalization or proven missing-event finding. No release or Wave acceptance is claimed. Synthetic samples do not prove production correctness. See `docs/DATA_FORMATS.md` and `docs/PHASE_BUILDS.md`.
+
+## Next executable step
+
+Review/merge the Phase 02 PR after its final CI checks. Then implement Phase 03: bounded original ledger XDR ingestion with independently verifiable provenance, complete ledger-range coverage, and malformed/unsupported-version tests. Do not claim a genuine MVP until differential reconciliation and safety gates pass. No release, application submission or deployment without owner approval. Keep root README clear of private phase numbers.
