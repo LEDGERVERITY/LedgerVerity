@@ -30,3 +30,9 @@ The `fixtures/` directory contains only synthetic examples. There is **no proven
 - [CAP-67](https://github.com/stellar/stellar-protocol/blob/a5508c44633620742bb69f508c5887e3fbce22d0/core/cap-0067.md): fee, stage and classic operation event behavior.
 - [SEP-41](https://github.com/stellar/stellar-protocol/blob/a5508c44633620742bb69f508c5887e3fbce22d0/ecosystem/sep-0041.md): i128/vec/map token data forms, permitted additional keys/topics and muxed memo variants.
 - [Phase 04 live Testnet smoke 38008691999](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38008691999): real metadata-v2/protocol-29 XDR returned by one RPC provider on ledgers 5113618–5113620. It confirms decoder compatibility but **does not** prove a token amount, a candidate ETL defect or historical chain consensus.
+
+### Reconciliation field mapping and limits (checked 2026-10-10)
+
+- [Upstream Go transformer](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/transform/contract_events.go): serializes DiagnosticEvent XDR, including wrapped ordinary event streams; discards original TransactionEventStage in the wrapper.
+- [Official ETL TOID](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/toid/main.go): 32-bit ledger, 20-bit transaction order, 12-bit operation order.
+- [CI 38009609558](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38009609558) verifies only comparison against **synthetic generated** candidate rows. No real ETL export plus independently corroborated source-ledger comparison has been verified.

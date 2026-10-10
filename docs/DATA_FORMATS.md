@@ -58,3 +58,7 @@ Only these six keys are supported. The range is inclusive and must be ordered, p
 ## Field provenance and limitations
 
 Upstream fields checked 2026-10-10: [stellar-etl `ContractEventOutput`](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/transform/schema.go). This is a verified field mapping from Go source, **not** an end-to-end production export fixture. BigQuery API envelopes, Parquet, altered transforms, raw XDR and unrelated provider formats remain unsupported without separate adapters and tests. See [source evidence](SOURCE_EVIDENCE.md) and [the architecture decision](decisions/0001-candidate-adapter-first.md).
+
+## Raw contract-event XDR is a diagnostic wrapper
+
+The pinned [stellar-etl event transform](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/transform/contract_events.go) serializes a **`DiagnosticEvent` wrapper** as base64 in the `contract_event_xdr` field. Transaction/operation stream events are wrapped with `in_successful_contract_call=true`; original diagnostic stream events retain their diagnostic flag. Transaction event stage is not included in the converted wrapper. `ledgerverity reconcile` therefore compares the wrapper, not bare `ContractEvent` XDR. It also validates raw `topics` and `data` as serialized SCVal XDR strings, not decoded JSON. See [reconciliation guide](RECONCILIATION.md).
