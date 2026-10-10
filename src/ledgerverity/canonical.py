@@ -59,7 +59,7 @@ def _decode(event: SourceEvent):
         item = xdr.ContractEvent.from_xdr_bytes(blob)
         if not blob or item.to_xdr_bytes() != blob:
             raise ValueError("Invalid XDR roundtrip")
-    except (binascii.Error, ValueError, TypeError, AttributeError) as exc:
+    except (binascii.Error, ValueError, TypeError, AttributeError, EOFError) as exc:
         raise SourceInputError("Invalid original contract-event XDR") from exc
     return item, blob, xdr
 
