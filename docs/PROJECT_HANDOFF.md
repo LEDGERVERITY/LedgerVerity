@@ -46,3 +46,11 @@
 ## Next executable step
 
 Phase 02 is merged and CI-verified; bounded source-XDR inspection is implemented and real provider-XDR tested on the Phase 03 branch. The bounded source importer is merged and CI-verified. The bounded source-local identity and selected event-stage/SEP-41 interpretation work is implemented and tested. Phase 04 is merged and CI-verified. Next proceed to Phase 05 evidence-limited differential reconciliation. Preserve a durable real-source corpus and independently corroborate source data before confirmed mismatch claims. Do not claim a genuine MVP until differential reconciliation and safety gates pass. No release, application submission or deployment without owner approval. Keep root README clear of private phase numbers.
+
+## Bounded source-vs-ETL comparison handoff (Phase 05)
+
+- New `ledgerverity reconcile --source ... --candidate ... --scope ... --format json`; reads saved original RPC `getLedgers` XDR and strict Stellar ETL `ContractEventOutput` JSONL only, never makes network calls.
+- Exact matching uses reconstructed `DiagnosticEvent` wrappers (the actual upstream value of `contract_event_xdr`), ledger/transaction hash and official packed TOID IDs. A multiset preserves two events with equal payload but distinct source positions. Inline fields and transaction success are checked against embedded XDR.
+- Results are `REVIEW_REQUIRED` or `INCONCLUSIVE`, exit 3. Invalid inputs exit 2. Both source authenticity and candidate export coverage remain unverified; no real ETL defects are confirmed.
+- [167-test CI on Python 3.10/3.12](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38009609558) SUCCESS at `4bee00a311d9dc5bbfec3eee0189770585a2aea1`. [Installed CLI smoke](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38009768895) SUCCESS at `14620ca36d358cae0447381334cbc766b1c87362`.
+- **Unfinished:** Independently consensus-trusted historical source data; real complete ETL fixture/version; validated candidate field adapters against original production exports; durable golden corpus and release-quality comparison evidence. No public release or Wave submission. Update this handoff after merge with exact main SHA and final successful CI links.

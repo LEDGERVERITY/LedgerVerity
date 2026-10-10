@@ -26,3 +26,9 @@ No public release or production validation is claimed.
 - Added stream-scoped original-XDR event locators, preserved XDR transaction-result and diagnostic-call success semantics, and transaction fee-event stages.
 - Added conservative SEP-41 transfer/mint/burn/clawback amount extraction for a supported subset of single/vec/map shapes, exact i128 decimal values, muxed metadata and extension-aware partial results.
 - Expanded serialized-XDR, malformed, edge and regression coverage, plus a real provider-v4 semantic smoke. The source-inspection JSON schema is version 2. **Still no global event ID, confirmed source/export parity, public release or Drips approval.**
+
+## Unreleased — bounded original-XDR versus ETL candidate comparison (2026-10-10)
+
+- Added offline `ledgerverity reconcile` for a supplied original `getLedgers` XDR capture, versioned ETL candidate JSONL and matching declared scope.
+- Uses source-derived DiagnosticEvent XDR wrappers, packed transaction/operation TOID and multiplicity-preserving matching. Reports source-only/candidate-only observations and inline-field/transaction-result differences without issuing confirmed error claims.
+- Added 42 unit and CLI tests (167 total), including serialized synthetic original XDR, and an installed-command CI smoke test. No genuine ETL-export fixture or consensus-trusted source is claimed.
