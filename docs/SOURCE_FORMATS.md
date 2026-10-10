@@ -44,4 +44,10 @@ Input: one saved successful JSON-RPC 2.0 envelope with a \`result.ledgers\` arra
 
 ## Evidence status
 
-All automated tests initially used **synthetic or stubbed** data. An end-to-end captured ledger with independently recorded network and provider provenance, authenticated trust anchor and real contract-event fixtures is required before marking the complete source-evidence gate verified. A read-only CLI is not a blockchain consensus verifier. Phase 04 will define canonical event identity and stage semantics; Phase 05 will do differential reconciliation.
+Automated tests use **synthetic or stubbed** data, including real serialized synthetic SDK XDR. An end-to-end captured ledger with independently recorded network and provider provenance, authenticated trust anchor and real contract-event fixtures is required before marking the complete source-evidence gate verified. A read-only CLI is not a blockchain consensus verifier. Phase 04 will define canonical event identity and stage semantics; Phase 05 will do differential reconciliation.
+
+## Reproducible live-provider smoke (opt-in only)
+
+The `Live Testnet Source Smoke (Opt-In)` GitHub workflow can be manually triggered. It requests `getNetwork`, `getLatestLedger` and at most three bounded `getLedgers` records through a documented public Testnet HTTPS RPC endpoint, checks the server-reported passphrase, performs the same local XDR/hash/link validation, and saves a 30-day artifact containing a captured response and `provenance.json`. The script does **not** submit transactions or handle wallet private keys; the public ledger capture is shared with GitHub Actions when running the workflow.
+
+On 2026-10-10, [this live run](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38007310724) succeeded for Testnet ledgers 5113395–5113397. This is genuine provider-returned data, not consensus-verified independent truth. Evidence must be preserved beyond the artifact's expiry if it is to become a durable golden corpus. The source importer and normal tests make no outbound network requests.

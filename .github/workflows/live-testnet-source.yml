@@ -1,11 +1,6 @@
 name: Live Testnet Source Smoke (Opt-In)
 on:
   workflow_dispatch:
-  push:
-    branches: ['feat/phase03-source-xdr-ingestion']
-    paths:
-      - 'scripts/live_testnet_source.py'
-      - '.github/workflows/live-testnet-source.yml'
 permissions:
   contents: read
 jobs:

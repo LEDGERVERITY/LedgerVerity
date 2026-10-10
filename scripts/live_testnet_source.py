@@ -1,7 +1,7 @@
 """Optional, explicitly networked TESTNET smoke; never runs during unit tests.
 
-Makes three bounded HTTPS JSON-RPC read requests. Does not transact or
-upload raw ledger data. Provider observations are not consensus attestations.
+Makes three bounded HTTPS JSON-RPC read requests. Does not transact. Retains public-ledger snapshots as time-limited GitHub
+Actions artifacts. Provider observations are not consensus attestations.
 """
 import json
 import datetime as dt
