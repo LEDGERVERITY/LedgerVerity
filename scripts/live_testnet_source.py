@@ -11,7 +11,7 @@ from pathlib import Path
 
 from ledgerverity.source import read_source_capture
 
-RPC = "https://soroban-testnet.stellar.org"
+RPC = "https://soroban-rpc.testnet.stellar.gateway.fm"
 EXPECTED_NETWORK = "Test SDF Network ; September 2015"
 MAX_RESPONSE = 12_000_000
 
