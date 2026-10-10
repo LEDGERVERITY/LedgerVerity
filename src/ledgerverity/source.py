@@ -36,6 +36,8 @@ class SourceEvent:
     operation_ordinal: int | None
     stage: str | None
     contract_event_xdr: str
+    tx_success: bool | None = None
+    diagnostic_success: bool | None = None
 
     def public(self) -> dict[str, Any]:
         return {
@@ -81,12 +83,14 @@ class SourceSnapshot:
         return all(not l.unsupported_tx_versions for l in self.ledgers)
 
     def report(self) -> dict[str, Any]:
+        from .canonical import describe_snapshot_events
+        canonical_events = describe_snapshot_events(self)
         counts = {"contract": 0, "diagnostic": 0, "transaction": 0, "operation": 0}
         for ledger in self.ledgers:
             for event in ledger.events:
                 counts["diagnostic" if event.stream == "diagnostic" else event.stream] += 1
         return {
-            "schema_version": 1,
+            "schema_version": 2,
             "status": "INCONCLUSIVE",
             "declared_network_passphrase": self.declared_network_passphrase,
             "first_ledger": self.first_ledger,
@@ -99,6 +103,7 @@ class SourceSnapshot:
             "transaction_event_streams_decoded": self.events_decoded,
             "event_counts_by_stream": counts,
             "events": [event.public() for ledger in self.ledgers for event in ledger.events],
+            "source_local_event_semantics": canonical_events,
             "ledger_headers": [
                 {"sequence": l.sequence, "hash": l.hash, "previous_hash": l.previous_hash,
                  "protocol": l.protocol, "metadata_version": l.meta_version,
@@ -147,11 +152,13 @@ def _bytes(value: Any, label: str) -> bytes:
 def _event(
     event_obj: Any, ledger: int, tx_hash: str, tx_index: int, stream: str,
     ordinal: int, operation_index: int | None = None, stage: str | None = None,
+    tx_success: bool | None = None, diagnostic_success: bool | None = None,
 ) -> SourceEvent:
     if not hasattr(event_obj, "to_xdr_bytes"):
         raise SourceInputError("Unsupported contract event XDR object")
     return SourceEvent(ledger, tx_hash, tx_index, stream, ordinal,
-                       operation_index, stage, base64.b64encode(event_obj.to_xdr_bytes()).decode("ascii"))
+                       operation_index, stage, base64.b64encode(event_obj.to_xdr_bytes()).decode("ascii"),
+                       tx_success, diagnostic_success)
 
 
 def _decode_ledger(entry: dict[str, Any]) -> DecodedLedger:
@@ -191,26 +198,34 @@ def _decode_ledger(entry: dict[str, Any]) -> DecodedLedger:
     try:
         for tx_index, tx_result in enumerate(payload.tx_processing, 1):
             tx_hash = tx_result.result.transaction_hash.hash.hex()
+            result_code = tx_result.result.result.result.code
+            tx_success = result_code in (
+                xdr.TransactionResultCode.txSUCCESS,
+                xdr.TransactionResultCode.txFEE_BUMP_INNER_SUCCESS,
+            )
             tx_meta = tx_result.tx_apply_processing
             if tx_meta.v == 3:
                 soroban = tx_meta.v3.soroban_meta
                 if soroban is not None:
                     for n, ev in enumerate(soroban.events):
-                        events.append(_event(ev, seq, tx_hash, tx_index, "contract", n))
+                        events.append(_event(ev, seq, tx_hash, tx_index, "contract", n, tx_success=tx_success))
                     for n, diagnostic in enumerate(soroban.diagnostic_events):
-                        events.append(_event(diagnostic.event, seq, tx_hash, tx_index, "diagnostic", n))
+                        events.append(_event(diagnostic.event, seq, tx_hash, tx_index, "diagnostic", n,
+                                             tx_success=tx_success, diagnostic_success=diagnostic.in_successful_contract_call))
             elif tx_meta.v == 4:
                 v4 = tx_meta.v4
                 for n, transaction_event in enumerate(v4.events):
                     events.append(_event(transaction_event.event, seq, tx_hash, tx_index,
-                                         "transaction", n, stage=transaction_event.stage.name))
+                                         "transaction", n, stage=transaction_event.stage.name,
+                                         tx_success=tx_success))
                 for op_index, operation in enumerate(v4.operations):
                     for n, event in enumerate(operation.events):
                         events.append(_event(event, seq, tx_hash, tx_index,
-                                             "operation", n, operation_index=op_index))
+                                             "operation", n, operation_index=op_index, tx_success=tx_success))
                 for n, diagnostic in enumerate(v4.diagnostic_events):
                     events.append(_event(diagnostic.event, seq, tx_hash, tx_index,
-                                         "diagnostic", n))
+                                         "diagnostic", n, tx_success=tx_success,
+                                         diagnostic_success=diagnostic.in_successful_contract_call))
             else:
                 unsupported.append(tx_meta.v)
     except (AttributeError, TypeError, IndexError, ValueError) as exc:
