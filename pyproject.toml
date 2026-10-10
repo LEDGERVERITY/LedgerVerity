@@ -17,6 +17,7 @@ source = ["stellar-sdk==16.1.0"]
 
 [project.scripts]
 ledgerverity = "ledgerverity.cli:main"
+ledgerverity-ci-gate = "ledgerverity.ci_gate:main"
 
 [tool.setuptools.packages.find]
 where = ["src"]
