@@ -40,7 +40,7 @@ def sha256_bounded(path: Path, limit: int) -> str:
 
 def annotate_report(report: dict[str, Any], source: Path, candidate: Path, scope: Path) -> dict[str, Any]:
     """Additive report contract v1; preserve existing keys and conservative status."""
-    from .formats import MAX_FILE_BYTES, MAX_MANIFEST_BYTES
+    from .formats import MAX_FILE_BYTES, MAX_LINE_BYTES
     from .source import MAX_CAPTURE_BYTES
     if report.get("schema_version") != 1 or report.get("status") not in ("INCONCLUSIVE", "REVIEW_REQUIRED"):
         raise ReportingError("Unsupported report schema/status")
@@ -56,7 +56,7 @@ def annotate_report(report: dict[str, Any], source: Path, candidate: Path, scope
     enriched["evidence_fingerprints"] = {
         "source_capture_sha256": src_digest,
         "candidate_file_sha256": sha256_bounded(candidate, MAX_FILE_BYTES),
-        "scope_manifest_sha256": sha256_bounded(scope, MAX_MANIFEST_BYTES),
+        "scope_manifest_sha256": sha256_bounded(scope, MAX_LINE_BYTES),
     }
     enriched["evidence_gates"] = {
         "captured_ledger_range_complete": report["source_range_observed_complete"] is True,
