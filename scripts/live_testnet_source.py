@@ -3,9 +3,8 @@
 Makes three bounded HTTPS JSON-RPC read requests. Does not transact or
 upload raw ledger data. Provider observations are not consensus attestations.
 """
-import hashlib
 import json
-import tempfile
+import datetime as dt
 import urllib.request
 from pathlib import Path
 
@@ -42,15 +41,32 @@ def main():
     if type(latest) is not int or latest < 5:
         raise RuntimeError("RPC returned an invalid latest ledger")
     # A recently closed ledger, not the current not-yet-consistently indexed tip.
-    sequence = latest - 2
+    sequence = latest - 4
     captured = call("getLedgers", {
-        "startLedger": sequence, "pagination": {"limit": 1}, "xdrFormat": "base64"
+        "startLedger": sequence, "pagination": {"limit": 3}, "xdrFormat": "base64"
     })
-    with tempfile.TemporaryDirectory() as folder:
-        path = Path(folder) / "real-testnet-rpc.json"
-        path.write_text(json.dumps(captured, separators=(",", ":")), encoding="utf-8")
-        snapshot = read_source_capture(path, sequence, sequence, EXPECTED_NETWORK)
-        report = snapshot.report()
+    folder = Path("artifacts")
+    folder.mkdir(exist_ok=True)
+    path = folder / "gateway-testnet-getledgers.json"
+    path.write_text(json.dumps(captured, separators=(",", ":")), encoding="utf-8")
+    snapshot = read_source_capture(path, sequence, sequence + 2, EXPECTED_NETWORK)
+    report = snapshot.report()
+    evidence = {
+        "provider_url": RPC,
+        "retrieved_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
+        "reported_network_passphrase": network,
+        "latest_ledger_when_requested": latest,
+        "start_ledger": sequence,
+        "end_ledger": sequence + 2,
+        "response_sha256": snapshot.captured_sha256,
+        "ledger_headers": report["ledger_headers"],
+        "capture_classification": "genuine RPC provider data, not independent consensus-anchored",
+        "source_provenance_verified": False,
+        "ledger_chain_anchored": False,
+    }
+    (folder / "provenance.json").write_text(
+        json.dumps(evidence, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
     if (not report["ledger_span_contiguous"]
             or not report["header_hashes_checked"]
             or not report["transaction_event_streams_decoded"]):
@@ -58,10 +74,12 @@ def main():
     print(json.dumps({
         "provider": RPC,
         "provider_network_passphrase_matched": True,
-        "ledger": sequence,
-        "ledger_hash": snapshot.ledgers[0].hash,
-        "metadata_version": snapshot.ledgers[0].meta_version,
-        "protocol": snapshot.ledgers[0].protocol,
+        "start_ledger": sequence,
+        "end_ledger": sequence + 2,
+        "ledger_hashes": [l.hash for l in snapshot.ledgers],
+        "metadata_versions": [l.meta_version for l in snapshot.ledgers],
+        "protocol_versions": [l.protocol for l in snapshot.ledgers],
+        "adjacent_header_links_checked": report["adjacent_hash_links_checked"],
         "capture_sha256": snapshot.captured_sha256,
         "event_stream_counts": report["event_counts_by_stream"],
         "source_provenance_verified": False,

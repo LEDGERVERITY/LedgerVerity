@@ -19,3 +19,9 @@ jobs:
           python-version: '3.12'
       - run: python -m pip install '.[source]'
       - run: PYTHONPATH=src python scripts/live_testnet_source.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: testnet-source-evidence
+          path: artifacts/
+          if-no-files-found: error
+          retention-days: 30

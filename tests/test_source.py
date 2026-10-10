@@ -63,6 +63,7 @@ class SourceInputTests(unittest.TestCase):
                     "event_completeness_verified", "ledger_chain_anchored"]:
             self.assertFalse(r[key])
         self.assertTrue(r["header_hashes_checked"])
+        self.assertTrue(r["adjacent_hash_links_checked"])
 
     def test_out_of_order_entries_sorted_for_chain(self):
         self.path.write_text(json.dumps(capture([item(11, HASH2), item(10, HASH1)])))
@@ -83,6 +84,8 @@ class SourceInputTests(unittest.TestCase):
         r = self.read().report()
         self.assertEqual(r["ledgers_parsed"], 0)
         self.assertEqual(r["missing_ledger_sequences"], [10, 11])
+        self.assertFalse(r["header_hashes_checked"])
+        self.assertFalse(r["adjacent_hash_links_checked"])
 
     def test_broken_adjacent_header_link_rejected(self):
         with patch("ledgerverity.source._decode_ledger", side_effect=[
