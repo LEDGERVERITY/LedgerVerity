@@ -1,0 +1,51 @@
+# TEMPLATE ONLY: copy into a consuming repository's .github/workflows/.
+# Must supply input files yourself; these are NOT fetched by LedgerVerity.
+# Not registered as a workflow in the LedgerVerity repository.
+name: Observational Stellar ETL Comparison
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  compare:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      # Fetch the tooling at a verified exact commit; update only after review.
+      - uses: actions/checkout@v4
+        with:
+          repository: LEDGERVERITY/LedgerVerity
+          ref: 0045dedd0b2cec7421a8cdcdd15baf1193658d6b
+          path: ledgerverity-tool
+      - name: Install pinned source-XDR interpreter
+        run: python -m pip install './ledgerverity-tool[source]'
+      - name: Check externally provisioned input files
+        shell: bash
+        run: |
+          test -f evidence/saved-getledgers.json
+          test -f evidence/candidate.jsonl
+          test -f evidence/scope.json
+      - name: Create report; status is deliberately observational
+        shell: bash
+        run: |
+          set +e
+          ledgerverity reconcile --source evidence/saved-getledgers.json --candidate evidence/candidate.jsonl --scope evidence/scope.json --format json --output report.json --summary-output report.md
+          result=$?
+          set -e
+          test "$result" -eq 3
+          ledgerverity-ci-gate --report report.json
+          cat report.md >> "$GITHUB_STEP_SUMMARY"
+      # Optional local policy: uncomment to fail on REVIEW_REQUIRED observations.
+      # - run: ledgerverity-ci-gate --report report.json --fail-on-review
+      - uses: actions/upload-artifact@v4
+        with:
+          name: observational-reconciliation-report
+          path: |
+            report.json
+            report.md
+          if-no-files-found: error
+          retention-days: 7

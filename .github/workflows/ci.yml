@@ -20,6 +20,40 @@ jobs:
       - run: ledgerverity inspect-source --help
       - run: ledgerverity reconcile --help
       - run: python tests/smoke_reconcile_installed.py
+      - run: ledgerverity-ci-gate --help
+      - name: Generate synthetic source/export data
+        run: |
+          python tests/generate_synthetic_demo.py "$RUNNER_TEMP/lv-exact" exact
+          python tests/generate_synthetic_demo.py "$RUNNER_TEMP/lv-review" source-only
+      - name: Verify installed JSON/Markdown report and opt-in review CI policy
+        shell: bash
+        run: |
+          for scenario in exact review; do
+            dir="$RUNNER_TEMP/lv-$scenario"
+            set +e
+            ledgerverity reconcile --source "$dir/source.json" --candidate "$dir/candidate.jsonl" --scope "$dir/scope.json" --format json --output "$dir/report.json" --summary-output "$dir/summary.md"
+            code=$?
+            set -e
+            test "$code" -eq 3
+            ledgerverity-ci-gate --report "$dir/report.json"
+          done
+          set +e
+          ledgerverity-ci-gate --report "$RUNNER_TEMP/lv-review/report.json" --fail-on-review
+          policy=$?
+          set -e
+          test "$policy" -eq 1
+          printf '%s\n' '### SYNTHETIC EXAMPLE, NOT real Stellar ETL evidence' >> "$GITHUB_STEP_SUMMARY"
+          cat "$RUNNER_TEMP/lv-review/summary.md" >> "$GITHUB_STEP_SUMMARY"
+      - uses: actions/upload-artifact@v4
+        with:
+          name: synthetic-reconciliation-${{ matrix.python-version }}
+          path: |
+            ${{ runner.temp }}/lv-exact/report.json
+            ${{ runner.temp }}/lv-exact/summary.md
+            ${{ runner.temp }}/lv-review/report.json
+            ${{ runner.temp }}/lv-review/summary.md
+          if-no-files-found: error
+          retention-days: 7
       - run: ledgerverity validate-etl --input fixtures/synthetic-etl-candidate.jsonl --scope fixtures/synthetic-etl-candidate.scope.json --format json
       - run: ledgerverity fixtures/synthetic-clean.jsonl --format json
       - run: |
