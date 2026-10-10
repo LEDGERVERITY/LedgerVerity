@@ -64,3 +64,9 @@ Phase 02 is merged and CI-verified; bounded source-XDR inspection is implemented
 - Installed GitHub Actions matrix generates synthetic source/export records, runs exact and source-only scenarios, publishes an explicitly synthetic Markdown job summary and temporary per-version 7-day report artifacts.
 - [201 distinct Python unittest tests and installed synthetic report CI passed on Python 3.10/3.12](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38010684124) for commit `0045dedd0b2cec7421a8cdcdd15baf1193658d6b`. Actual synthetic artifact receipts were inspected. Final PR/main CI to be verified and appended here.
 - **Important blocker:** No actual full-coverage versioned Stellar ETL export matched to independently corroborated original ledger evidence, permanent real paired golden fixtures, or confirmed anomaly. This blocks complete verified MVP release claims. Next steps: review/merge the CI reporting PR, then proceed to further regression/platform hardening and genuine-data acceptance.
+
+### Verified merge/CI evidence
+
+- **Phase 06 PR #5:** https://github.com/LEDGERVERITY/LedgerVerity/pull/5 — MERGED to main as `9c50253635cb388656211160ac89498da7fcf9bc`.
+- **Verified post-merge CI:** [run 38010877352](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38010877352), **SUCCESS** at that exact commit. **201 distinct tests** passed per Python 3.10/3.12 job; installed synthetic report generation, CI policy evaluation, GitHub Actions summary and 7-day synthetic artifact uploads all passed.
+- **Trust boundary maintained:** no verified source consensus attestation, no proven ETL export completeness, no genuine paired export fixture, and no real-world confirmed ETL discrepancies. Phase 07 engineering hardening can begin; release gate remains blocked on real data.

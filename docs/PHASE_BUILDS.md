@@ -91,3 +91,9 @@ Status vocabulary: `NOT STARTED`, `IN PROGRESS`, `IMPLEMENTED — UNVERIFIED`, `
 - **Malformed/safety cases:** malformed/nonfinite/oversized JSON report, fake source/network/coverage/reconciliation claims, bad fingerprint/status/counters, wrong output paths, direct and symlink aliases to original evidence, missing output directory, untrusted manifest Markdown injection, failure without truncating an existing report.
 - **Trust boundary:** SHA-256 digests describe files, not independently authenticated origin. A clean supplied-file report remains `INCONCLUSIVE`, not proven parity. Real complete ETL export and independently anchored ledger evidence remain absent. No production setup or Drips/Wave application.
 - **Owner/next gate:** Engineering verify final PR/main CI and continue Phase 07 malformed/regression/platform hardening; maintainer obtain actual ETL export and independent archival verification before release.
+
+### Verified Phase 06 merge/CI
+
+- **Phase 06 PR #5:** https://github.com/LEDGERVERITY/LedgerVerity/pull/5 — MERGED to main as `9c50253635cb388656211160ac89498da7fcf9bc`.
+- **Verified post-merge CI:** [run 38010877352](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38010877352), **SUCCESS** at that exact commit. **201 distinct tests** passed per Python 3.10/3.12 job; installed synthetic report generation, CI policy evaluation, GitHub Actions summary and 7-day synthetic artifact uploads all passed.
+- **Trust boundary maintained:** no verified source consensus attestation, no proven ETL export completeness, no genuine paired export fixture, and no real-world confirmed ETL discrepancies. Phase 07 engineering hardening can begin; release gate remains blocked on real data.
