@@ -51,6 +51,12 @@ def main():
     path.write_text(json.dumps(captured, separators=(",", ":")), encoding="utf-8")
     snapshot = read_source_capture(path, sequence, sequence + 2, EXPECTED_NETWORK)
     report = snapshot.report()
+    semantics = report.get("source_local_event_semantics", [])
+    if len(semantics) != sum(report["event_counts_by_stream"].values()):
+        raise RuntimeError("Original event stream semantics count mismatch")
+    locators = [e["source_locator_sha256"] for e in semantics]
+    if len(locators) != len(set(locators)):
+        raise RuntimeError("Duplicate source-local event locator in live XDR")
     evidence = {
         "provider_url": RPC,
         "retrieved_utc": dt.datetime.now(dt.timezone.utc).isoformat(),
