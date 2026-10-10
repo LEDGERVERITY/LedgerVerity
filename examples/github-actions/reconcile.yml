@@ -15,8 +15,14 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Install source-XDR interpreter
-        run: python -m pip install '.[source]'
+      # Fetch the tooling at a verified exact commit; update only after review.
+      - uses: actions/checkout@v4
+        with:
+          repository: LEDGERVERITY/LedgerVerity
+          ref: 0045dedd0b2cec7421a8cdcdd15baf1193658d6b
+          path: ledgerverity-tool
+      - name: Install pinned source-XDR interpreter
+        run: python -m pip install './ledgerverity-tool[source]'
       - name: Check externally provisioned input files
         shell: bash
         run: |
