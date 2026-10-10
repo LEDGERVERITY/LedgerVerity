@@ -51,6 +51,21 @@ ledgerverity reconcile --source saved-getledgers.json --candidate candidate.json
 
 Results distinguish exact pairs, source-only and candidate-only observations, inline-field differences, and unmatchable/incomplete records. `REVIEW_REQUIRED` and `INCONCLUSIVE` **never certify a confirmed ETL defect or complete historical parity**. See [reconciliation](docs/RECONCILIATION.md) for required input schemas and evidence limitations.
 
+## Reproducible reports and CI integration
+
+The comparison CLI supports `--format json|text|markdown` and optional `--summary-output report.md` alongside `--output report.json`. Reports include file SHA-256 fingerprints, observed difference counts, bounded findings, and suggested investigation steps. The Markdown summary does not render untrusted ETL/manifest prose.
+
+```bash
+ledgerverity reconcile --source saved-getledgers.json --candidate candidate.jsonl --scope candidate.scope.json --format json --output report.json --summary-output report.md
+ledgerverity-ci-gate --report report.json
+# Optional: fail only when an observed difference needs review.
+ledgerverity-ci-gate --report report.json --fail-on-review
+```
+
+A valid reconciliation CLI comparison still exits **3** (`INCONCLUSIVE` or `REVIEW_REQUIRED`); invalid inputs exit **2**. The optional CI report gate returns 0 for a valid observational report, 1 only when `--fail-on-review` is set and review is required, or 2 for a malformed/unsafe report. **None of these codes proves historical parity or a real ETL defect.**
+
+See [CI integration guide](docs/CI_REPORTING.md), [versioned JSON contract](docs/REPORT_SCHEMA.md), and [inert external workflow template](examples/github-actions/reconcile.yml). Repository CI exercises **synthetic**, SDK-generated XDR and candidate data only and labels uploaded artifacts accordingly.
+
 ## Inspect independently transformed ledger metadata
 
 Install the optional Stellar XDR decoder and inspect a **saved** RPC `getLedgers` response:

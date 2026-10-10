@@ -32,3 +32,11 @@ No public release or production validation is claimed.
 - Added offline `ledgerverity reconcile` for a supplied original `getLedgers` XDR capture, versioned ETL candidate JSONL and matching declared scope.
 - Uses source-derived DiagnosticEvent XDR wrappers, packed transaction/operation TOID and multiplicity-preserving matching. Reports source-only/candidate-only observations and inline-field/transaction-result differences without issuing confirmed error claims.
 - Added 42 unit and CLI tests (167 total), including serialized synthetic original XDR, and an installed-command CI smoke test. No genuine ETL-export fixture or consensus-trusted source is claimed.
+
+## Unreleased — safe reconciliation reporting and CI integration (2026-10-10)
+
+- JSON `report_contract` metadata and separate SHA-256 digests of captured original ledger, candidate and manifest files; additive findings `suggested_check` labels preserve legacy report keys.
+- Markdown report output, optional simultaneous JSON/Markdown files, safe atomic file replacement, and protection from overwriting any source/candidate/manifest input.
+- Separate `ledgerverity-ci-gate` with opt-in review failure rather than asserting a real ETL error; malicious/fabricated verification claims rejected.
+- Synthetic installed-CLI demonstration, GitHub job summary, 7-day version-specific report artifacts, reusable inert external consumer workflow example, and positive/negative/malformed/security regression tests.
+- **Still no genuine independently trusted source-plus-ETL export fixture and no confirmed indexer discrepancy or release-readiness claim.**

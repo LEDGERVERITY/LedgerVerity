@@ -61,3 +61,11 @@ JSON reports include precise counts, sample findings limited to 100 with `findin
 - [ETL contract-event transformer](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/transform/contract_events.go) — wrapper conversion and XDR serializer
 - [ETL packed TOID](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/toid/main.go)
 - [ETL output schema](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/transform/schema.go)
+
+## Reporting and GitHub Actions
+
+In addition to `text` and `json`, reconciliation supports `--format markdown` and `--summary-output report.md`. JSON is additive at schema version 1 and includes `report_contract=ledgerverity.reconciliation-report.v1`, captured source/candidate/scope fingerprints, explicit not-proven evidence gates, and bounded per-code suggested investigations. A short, fixed-content Markdown view is safe to append to `GITHUB_STEP_SUMMARY`. Neither source file hash nor an observed pair authenticates chain consensus.
+
+Use `ledgerverity-ci-gate --report report.json` to validate an observational report without failing on manually reviewable findings, or `--fail-on-review` to turn `REVIEW_REQUIRED` into a **local CI policy failure**. The latter is not a defect verdict. See [CI guide](CI_REPORTING.md), [schema contract](REPORT_SCHEMA.md), and the [copyable external workflow](../examples/github-actions/reconcile.yml).
+
+No report output is allowed to overwrite an input file or point to an alias of one; outputs are written by replacement from a temporary file. This makes repeated runs deterministic for unchanged input bytes without changing the original XDR or export files.

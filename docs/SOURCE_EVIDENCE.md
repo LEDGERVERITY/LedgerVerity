@@ -36,3 +36,8 @@ The `fixtures/` directory contains only synthetic examples. There is **no proven
 - [Upstream Go transformer](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/transform/contract_events.go): serializes DiagnosticEvent XDR, including wrapped ordinary event streams; discards original TransactionEventStage in the wrapper.
 - [Official ETL TOID](https://github.com/stellar/stellar-etl/blob/34f6910b818767c0c2b8f187db21855a51f43c5e/internal/toid/main.go): 32-bit ledger, 20-bit transaction order, 12-bit operation order.
 - [CI 38009609558](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38009609558) verifies only comparison against **synthetic generated** candidate rows. No real ETL export plus independently corroborated source-ledger comparison has been verified.
+
+### CI report demonstration (2026-10-10)
+
+- [GitHub Actions run 38010684124](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38010684124) demonstrates **synthetic only** original-XDR versus synthetic ETL-shaped JSONL pairs on Python 3.10/3.12, with 201 distinct tests and installed CLI report checks. The artifacts `synthetic-reconciliation-3.10` and `synthetic-reconciliation-3.12` are scheduled to expire after 7 days.
+- The generated SHA-256 fingerprints identify demonstration files; they are **not** an independent Stellar consensus provenance receipt or evidence that a real ETL export is complete. No confirmed real-world ETL discrepancy is asserted.
