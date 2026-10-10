@@ -8,7 +8,7 @@ Status vocabulary: `NOT STARTED`, `IN PROGRESS`, `IMPLEMENTED — UNVERIFIED`, `
 |---|---|---|---|
 | 01 | Recheck starter, define narrow genuine reconciliation MVP | VERIFIED (baseline only) | 13 existing unittest checks and GitHub CI; no completeness proof |
 | 02 | Strict official-field ETL candidate JSONL adapter and manifest | VERIFIED for documented structural subset | 54 tests passing on Python 3.10 + 3.12; CI linked below; still no real export fixture |
-| 03 | Independent network-scoped original ledger XDR evidence | NOT STARTED | Decode bounded genuine `LedgerCloseMeta` and prove provenance/coverage |
+| 03 | Inspect bounded original ledger-XDR source evidence, including hash-linked sequences | VERIFIED (bounded importer only) | Real Testnet 3-ledger smoke + 88 offline tests; provider consensus anchoring and permanent golden fixture still unverified |
 | 04 | Canonical identities, event stage/success and supported token shapes | NOT STARTED | Positive/negative tests for transaction, operation, event index, versions |
 | 05 | Differential reconciliation against independently sourced evidence | NOT STARTED | Proven missing/extra/duplicate/misinterpreted outcomes with inconclusive cases |
 | 06 | Deterministic terminal/JSON reconciliation reports and CI examples | NOT STARTED | Stable schema, exits, limits and evidence identifiers |
@@ -37,3 +37,19 @@ Status vocabulary: `NOT STARTED`, `IN PROGRESS`, `IMPLEMENTED — UNVERIFIED`, `
 ## Evidence boundary
 
 54 current branch tests consist of 13 legacy tests plus 33 format tests and 8 CLI tests. All candidate examples are **synthetic**. No successful GitHub action or clean candidate export is proof of an actual Stellar discrepancy. Never publish a release or submit a Wave application without explicit owner authorization.
+
+## Phase 03 acceptance and evidence record (2026-10-10)
+
+- **Objective / distinct problem:** Inspect original ledger metadata rather than a candidate transformation to ground later reconciliation in a separate source path.
+- **Scope delivered:** Offline, read-only inspection of a single bounded JSON-RPC `getLedgers` capture with base64 `headerXdr` and `metadataXdr`, Stellar SDK 16.1.0 optional `[source]` decoder, v0/v1/v2 ledger metadata, v3/v4 event-stream preservation, user-declared network, SHA-256 XDR ledger-header consistency, adjacent hash links, unsupported transaction-meta tracking, explicit gaps and inconclusive status.
+- **Files:** `src/ledgerverity/source.py`, `src/ledgerverity/source_cli.py`, modified `src/ledgerverity/cli.py`, `pyproject.toml`, `tests/test_source.py`, `tests/test_source_xdr.py`, `docs/SOURCE_FORMATS.md`, `scripts/live_testnet_source.py`, `.github/workflows/live-testnet-source.yml`, CI and related docs.
+- **Positive tests:** v1/v2 serialized synthetic XDR roundtrips, actual RPC-sourced v2 meta on protocol 29, 3 adjacent Testnet ledgers, intact v4 transaction/operation/diagnostic streams, deterministic reports and legacy CLI regression.
+- **Malformed / negative tests:** invalid UTF-8, duplicate JSON keys, float JSON, invalid base64, trailing XDR bytes, altered embedded headers, wrong sequence, hash tampering, broken adjacent links, reversed/mixed/out-of-range/duplicate sequences, unsupported metadata markers, operational output errors.
+- **Boundaries:** at most 25 requested ledgers, 12 MB capture, 2 MB per XDR object; missing ledgers, empty snapshots and unsupported metadata never count as proof of correct parity.
+- **Regression risks:** `validate-etl` and positional `audit` must stay backward compatible; separate diagnostic and contract streams must never silently deduplicate.
+- **CI gate:** [88/88 tests per Python 3.10 and 3.12 job](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38007310689) at commit `9a21de089a54aa3e712b8e81e7c5c58102ae97e7`, with optional SDK installed; the final docs branch commit requires its own CI check.
+- **Real Testnet evidence:** [Live Testnet run 38007310724](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38007310724), `SUCCESS`, at `9a21de089a54aa3e712b8e81e7c5c58102ae97e7`; ledgers 5113395–5113397, three checked hash links/headers, protocol 29, metadata v2, 61 transaction events, 32 operation events, 762 diagnostic events; 30-day `testnet-source-evidence` artifact includes captured JSON and provenance SHA-256 `061b9810a627ecb5deb8c5e7491d33fa4d703ff91fd6a3098aa58d97868838ae`.
+- **Explicit confidence limits:** This evidence is genuine **single-provider Testnet RPC data**, not a consensus-anchored historical proof, not a verified network identity independent of the provider, and not an ETL discrepancy. The retained artifact is time-limited, not a committed permanent golden corpus. `source_provenance_verified=false`, `ledger_chain_anchored=false` and `event_completeness_verified=false` remain truthful. No source/candidate comparison or canonical merged event identity is implemented.
+- **Status:** `VERIFIED` for the **bounded provider-XDR inspection and internal ledger-link checks** only; source authentication and completeness are open dependencies for confirmed findings.
+- **Blocker / owner:** Maintainer to obtain separately corroborated archival evidence and preserve durable, versioned event-rich reference fixtures; engineering to normalize stage and event identity next.
+- **Next action:** Phase 04 — define canonical event-stream, operation and transaction identities for supported metadata versions, with actual XDR regression fixtures and explicit `INCONCLUSIVE` on unsupported forms.
