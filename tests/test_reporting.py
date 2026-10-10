@@ -198,7 +198,11 @@ class ReportingTests(unittest.TestCase):
             render_markdown(r)
 
 
-class GateTests(ReportingTests):
+class GateTests(unittest.TestCase):
+    setUp = ReportingTests.setUp
+    invoke = ReportingTests.invoke
+    report = ReportingTests.report
+
     def test_default_gate_treats_review_as_observation_not_proof(self):
         self.candidate.write_text("\n".join(self.candidate.read_text().splitlines()[:-1])+"\n")
         self.assertEqual(evaluate_report(self.report()),0)
