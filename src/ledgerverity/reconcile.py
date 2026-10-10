@@ -205,7 +205,8 @@ def compare_source_candidate(snapshot: SourceSnapshot, scope: CandidateScope,
     # Stable, multiplicity-preserving multiset matching: equal payloads are
     # neither deduplicated nor treated as universally identified event IDs.
     matches, source_only, candidate_only, outcome_mismatch = 0, [], [], []
-    for key in sorted(set(source) | set(candidates)):
+    for key in sorted(set(source) | set(candidates),
+                      key=lambda v: (v[0], v[1], v[2], -1 if v[3] is None else v[3], v[4])):
         originals = source.get(key, [])
         exports = candidates.get(key, [])
         pairs = min(len(originals), len(exports))
