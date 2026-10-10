@@ -173,7 +173,7 @@ class ReportingTests(unittest.TestCase):
     def test_cannot_write_into_missing_directory(self):
         rc,out,err=self.invoke("--output",str(self.dir/"nope"/"r.json"))
         self.assertEqual((rc,out),(2,""))
-        self.assertIn("Unable to write",err)
+        self.assertIn("unable to write",err)
 
     def test_status_stays_inconclusive_on_exact_match(self):
         r=self.report()
