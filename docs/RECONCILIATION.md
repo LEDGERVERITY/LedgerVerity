@@ -24,7 +24,7 @@ The official ETL code serializes a **DiagnosticEvent XDR wrapper** into the unfo
 The source side reconstructs the correct wrapper and matches the supplied candidate as a multiset, using:
 
 - Ledger sequence and transaction hash
-- Exact 64-bit Stellar ETL `transaction_id` (ledger 32 bits / transaction ordinal 20 bits / operation slot 12 bits, with transaction slot 0-based *within the operation field*)
+- Exact 64-bit Stellar ETL `transaction_id` (ledger sequence 32 bits / transaction application ordinal 20 bits / operation component 12 bits, where transaction-level records use operation component 0)
 - Optional `operation_id` with operation component 1-based; null for transaction, diagnostic and legacy contract streams
 - SHA-256 of canonical serialized `DiagnosticEvent` XDR
 
