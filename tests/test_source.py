@@ -182,7 +182,14 @@ class SourceInputTests(unittest.TestCase):
 
     def test_diagnostic_and_contract_streams_never_deduplicate(self):
         import base64
-        ev = base64.b64encode(b"some-event").decode()
+        from stellar_sdk import xdr
+        ev = xdr.ContractEvent(
+            ext=xdr.ExtensionPoint(0), contract_id=None,
+            type=xdr.ContractEventType.SYSTEM,
+            body=xdr.ContractEventBody(v=0, v0=xdr.ContractEventV0(
+                topics=[], data=xdr.SCVal(type=xdr.SCValType.SCV_VOID)
+            ))
+        ).to_xdr()
         items = (
             SourceEvent(10, HASH1, 1, "contract", 0, None, None, ev),
             SourceEvent(10, HASH1, 1, "diagnostic", 0, None, None, ev),
