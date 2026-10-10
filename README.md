@@ -14,6 +14,7 @@ Stellar's ETL project documents cases where contract events have been duplicated
 - Inspects bounded, manually saved Stellar RPC `getLedgers` original ledger metadata XDR, verifies embedded header hashes and adjacent links, and preserves different contract/diagnostic event streams without conflating them.
 - Strictly validates a versioned subset of Stellar ETL contract-event JSONL fields against a caller-declared ledger-range manifest (no independent source verification).
 - Produces deterministic terminal or JSON reports with line references and explicit uncertainty.
+- Reports source-local transaction/operation/event positions, transaction outcomes and event stages, and a narrowly supported, exact-amount SEP-41 token-movement view from original event XDR.
 
 ## Try it
 
@@ -48,11 +49,11 @@ python -m pip install '.[source]'
 ledgerverity inspect-source --input source-rpc.json --from-ledger 100 --to-ledger 102 --network-passphrase 'Test SDF Network ; September 2015' --format json
 ```
 
-The example requires a genuine saved RPC response for the given ledger numbers. The command makes **no network calls**; it validates local XDR structure and internal hash links, but reports `INCONCLUSIVE` (exit 3) because a saved file cannot independently authenticate network consensus or prove historical completeness. See [source evidence format](docs/SOURCE_FORMATS.md).
+The example requires a genuine saved RPC response for the given ledger numbers. The command makes **no network calls**; it validates local XDR structure and internal hash links, and reports *source-local* event positions and limited token-event semantics, but returns `INCONCLUSIVE` (exit 3) because a saved file cannot independently authenticate network consensus or prove historical completeness. See [source evidence format](docs/SOURCE_FORMATS.md) and [event semantics](docs/EVENT_SEMANTICS.md).
 
 ## Legacy normalized audit input schema
 
-This prototype reads JSONL objects with normalized, snake-case keys: `transaction_id` (string/integer), `ledger_sequence`, `type_string`, `contract_id`, `topics` (JSON array), `data` (JSON value), `operation_id` (nullable), `successful` (boolean), `in_successful_contract_call` (boolean), and optionally `event_id` (string). This is a **normalization contract for this tool**, not a claim that official BigQuery exports use identical JSON field names or JSON types. Export adapters for BigQuery and original ledger XDR are planned, not implemented.
+This prototype reads JSONL objects with normalized, snake-case keys: `transaction_id` (string/integer), `ledger_sequence`, `type_string`, `contract_id`, `topics` (JSON array), `data` (JSON value), `operation_id` (nullable), `successful` (boolean), `in_successful_contract_call` (boolean), and optionally `event_id` (string). This is a **normalization contract for this tool**, not a claim that official BigQuery exports use identical JSON field names or JSON types. Direct BigQuery API envelope adapters are not implemented; separate read-only XDR inspection and ETL candidate-field validation are implemented.
 
 A single input should represent **one network and a well-defined observation scope**. Do not mix networks or competing meanings of `event_id`.
 

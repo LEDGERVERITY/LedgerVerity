@@ -1,8 +1,6 @@
 name: Live Testnet Source Smoke (Opt-In)
 on:
   workflow_dispatch:
-  push:
-    branches: ['feat/phase04-event-identity-semantics']
 permissions:
   contents: read
 jobs:

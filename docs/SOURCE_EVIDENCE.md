@@ -23,3 +23,10 @@ The `fixtures/` directory contains only synthetic examples. There is **no proven
 - [Live 3-ledger run 38007310724](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38007310724): successfully decoded ledger range 5113395–5113397, checked three computed header hashes and two adjacent previous-header links; 61 transaction, 32 operation and 762 diagnostic events. Provider Gateway Testnet RPC. Captured response SHA-256 `061b9810a627ecb5deb8c5e7491d33fa4d703ff91fd6a3098aa58d97868838ae`, stored with claimed provenance as a 30-day GitHub Actions artifact, expires 2026-11-09.
 - The earlier SDF-hosted Testnet RPC attempt failed with HTTP 403 from the GitHub runner; that is an access restriction and **not** a protocol defect.
 - **Unverified:** independent consensus checkpoint anchoring, independent provider corroboration, source network identity beyond provider claims, any source/candidate parity finding, permanent golden fixture corpus.
+
+### Event semantics check — 2026-10-10
+
+- [Official XDR event structures](https://github.com/stellar/stellar-xdr/blob/main/Stellar-ledger.x): `TransactionMetaV3`/`TransactionMetaV4`, per-operation event arrays, `TransactionEventStage`, diagnostics.
+- [CAP-67](https://github.com/stellar/stellar-protocol/blob/a5508c44633620742bb69f508c5887e3fbce22d0/core/cap-0067.md): fee, stage and classic operation event behavior.
+- [SEP-41](https://github.com/stellar/stellar-protocol/blob/a5508c44633620742bb69f508c5887e3fbce22d0/ecosystem/sep-0041.md): i128/vec/map token data forms, permitted additional keys/topics and muxed memo variants.
+- [Phase 04 live Testnet smoke 38008691999](https://github.com/LEDGERVERITY/LedgerVerity/actions/runs/38008691999): real metadata-v2/protocol-29 XDR returned by one RPC provider on ledgers 5113618–5113620. It confirms decoder compatibility but **does not** prove a token amount, a candidate ETL defect or historical chain consensus.
