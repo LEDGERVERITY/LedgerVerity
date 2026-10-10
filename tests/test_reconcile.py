@@ -105,8 +105,11 @@ class ReconciliationTests(unittest.TestCase):
         self.assertFalse(r["reconciliation_proven"])
 
     def test_one_different_payload_produces_two_unpaired_observations(self):
+        from test_canonical import i128
+        different_event = xdr.ContractEvent.from_xdr(event_xdr(value=i128(99)))
+        different_wrapper = xdr.DiagnosticEvent(in_successful_contract_call=True, event=different_event)
         changed = candidate(self.snapshot.ledgers[0].events[1],2,
-                            contract_event_xdr=self.rows[0].raw["contract_event_xdr"])
+                            contract_event_xdr=different_wrapper.to_xdr())
         r=self.compare(rows=[self.rows[0],changed,*self.rows[2:]])
         self.assertGreater(r["summary"]["source_only"],0)
         self.assertGreater(r["summary"]["candidate_only"],0)
