@@ -37,7 +37,7 @@ def _atomic_write(dest: Path, body: str) -> None:
             handle.write(body)
         os.replace(temp, dest)
     except OSError as exc:
-        raise ReportingError("Unable to write reconciliation report") from exc
+        raise ReportingError("unable to write reconciliation report") from exc
     finally:
         if temp is not None:
             try:
@@ -86,6 +86,7 @@ def main(argv: list[str]) -> int:
                 f"Missing source ledgers: {m['missing_source_ledgers']}",
                 f"Findings shown: {len(report['findings'])}/{report['finding_count']}" +
                 (" (truncated)" if report["findings_truncated"] else ""),
+                "Confirmed discrepancies: NONE (not independently verified)",
                 "Confirmed ETL defects: NONE VERIFIED",
                 "Source/network authenticity, full export coverage, historical parity: NOT VERIFIED",
             ]) + "\n"

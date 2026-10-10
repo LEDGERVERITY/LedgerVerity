@@ -168,7 +168,7 @@ class ReportingTests(unittest.TestCase):
         rc,out,err=self.invoke("--output",str(report),"--summary-output",str(missing))
         self.assertEqual((rc,out),(2,""))
         self.assertEqual(report.read_text(),"keep-me")
-        self.assertIn("Unable to write",err)
+        self.assertIn("unable to write",err)
 
     def test_cannot_write_into_missing_directory(self):
         rc,out,err=self.invoke("--output",str(self.dir/"nope"/"r.json"))
