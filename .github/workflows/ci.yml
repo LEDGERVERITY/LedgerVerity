@@ -18,6 +18,7 @@ jobs:
       - run: ledgerverity --help
       - run: ledgerverity validate-etl --help
       - run: ledgerverity inspect-source --help
+      - run: ledgerverity reconcile --help
       - run: ledgerverity validate-etl --input fixtures/synthetic-etl-candidate.jsonl --scope fixtures/synthetic-etl-candidate.scope.json --format json
       - run: ledgerverity fixtures/synthetic-clean.jsonl --format json
       - run: |
